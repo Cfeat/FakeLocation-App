@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fake Location</string>
+    <string name="mode_draw">划线模拟</string>
+    <string name="mode_auto">设点自动规划</string>
+    <string name="hint_draw">点「开始划线」，在地图上滑动画出路线，松手完成；右下角可定位到当前位置</string>
+    <string name="hint_drawing">划线中：用手指在地图上滑动，松开即完成路线</string>
+    <string name="hint_auto">自动模式：依次点击起点/途经点/终点，再点「自动规划」</string>
+    <string name="start_draw">开始划线</string>
+    <string name="stop_draw">完成划线</string>
+    <string name="stop_before_draw">请先停止模拟再划线</string>
+    <string name="draw_done">已采集 %d 个轨迹点，可开始模拟</string>
+    <string name="need_draw_first">请先划线生成路线（点「开始划线」）</string>
+    <string name="locate_me">定位到我</string>
+    <string name="locating">正在定位…</string>
+    <string name="located_ok">已定位 %.5f, %.5f · 精度 ±%.0fm</string>
+    <string name="locate_blocked_title">请先停止模拟</string>
+    <string name="locate_blocked_message">模拟定位运行时会占用系统定位源，「定位到我」可能拿到假坐标或失败。是否先停止模拟再定位？</string>
+    <string name="location_disabled">请打开系统定位（GPS/网络定位）</string>
+    <string name="clear_route">清空</string>
+    <string name="plan_route">自动规划</string>
+    <string name="start_mock">开始模拟</string>
+    <string name="stop_mock">停止模拟</string>
+    <string name="jump_here">跳到此点</string>
+    <string name="speed_label">速度 m/s</string>
+    <string name="status_idle">未模拟 · 须在开发者选项指定本应用为「模拟位置信息应用」</string>
+    <string name="diag_idle">开始模拟后这里显示系统写入/回读坐标</string>
+    <string name="need_mock_app">未指定模拟位置应用</string>
+    <string name="need_location_permission">需要定位权限</string>
+    <string name="route_too_short">至少需要 2 个点</string>
+    <string name="need_auto_plan">自动模式请先点「自动规划」生成路线</string>
+    <string name="plan_failed">路径规划失败，请检查网络或改用划线</string>
+    <string name="plan_ok">已生成自动路线</string>
+    <string name="points_selected">已选 %d 个点</string>
+    <string name="jump_too_far">相邻点间距约 %d km，过大易触发风控，请拆近重设</string>
+    <string name="mock_started_hint">模拟已启动。请看下方「系统回读」是否有坐标；再到小程序重新进入或重新授权定位</string>
+
+    <string name="safety_title">微信账号安全须知</string>
+    <string name="safety_message">本工具通过系统「模拟位置」影响定位，微信可能识别为 mock，存在限流/验证/封号风险。\n\n请务必：\n1. 仅用测试微信号联调，勿用主号日常使用；\n2. 仅测自有小程序，勿用于虚假打卡或骗取权益；\n3. 模拟结束后立刻停止，并在开发者选项中取消本应用为模拟位置应用；\n4. 保持步行级速度与合理轨迹，避免瞬间大跨度传送。\n\n本应用不会、也不应尝试隐藏 mock 标记或绕过微信风控。</string>
+    <string name="safety_accept">我已了解，仅用于测试</string>
+    <string name="safety_decline">退出</string>
+
+    <string name="speed_confirm_title">速度偏高</string>
+    <string name="speed_confirm_message">当前 %.1f m/s 超过建议步行速度（≤3.5）。异常高速更容易被判定为异常行为，确定继续？</string>
+    <string name="continue_anyway">仍要继续</string>
+
+    <string name="jump_confirm_title">确认瞬移定点？</string>
+    <string name="jump_confirm_message">长按定点会瞬间切换坐标，比沿线移动更容易被判定异常。建议仅在测试环境使用，并使用测试微信号。</string>
+
+    <string name="after_stop_title">模拟已结束</string>
+    <string name="after_stop_message">为降低微信账号风险，请立即：\n1. 确认本应用已停止模拟；\n2. 打开开发者选项，将「模拟位置信息应用」改回「未选择」或其它；\n3. 再用主微信号前，先确认系统定位已恢复真实位置。</string>
+    <string name="open_dev_options">打开开发者选项</string>
+
+    <string name="tiles_gaode">底图：高德矢量</string>
+    <string name="tiles_gaode_sat">底图：高德卫星</string>
+    <string name="tiles_geoq">底图：GeoQ（备用）</string>
+    <string name="map_loading">正在检测地图瓦片…</string>
+    <string name="map_ok">地图源：%1$s（%2$s）</string>
+    <string name="map_fail">地图瓦片加载失败：%1$s。请开网络后点菜单切换底图，或清数据重装。</string>
+    <string name="map_retry">重试加载地图</string>
+    <string name="coord_mode_convert">坐标：地图GCJ→系统WGS（推荐）</string>
+    <string name="coord_mode_raw">坐标：原样写入（部分国产机可试）</string>
+    <string name="action_coord_mode">切换坐标写入方式</string>
+    <string name="action_wechat_help">微信读不到位置？</string>
+    <string name="wechat_help_title">小程序定位不变排查</string>
+    <string name="bridge_hint">小程序联调（推荐）：微信常忽略系统 Mock。请在开发版小程序请求下方地址，用返回的 GCJ 坐标替代 wx.getLocation。</string>
+    <string name="copy_bridge_url">复制桥接地址</string>
+    <string name="bridge_copied">已复制：%1$s</string>
+    <string name="bridge_no_ip">未获取到局域网 IP，请连接同一 Wi‑Fi 后重试</string>
+    <string name="wechat_help_message">为什么小程序定位不变？\n\n微信经常不使用（或会丢弃）系统模拟 GPS，所以仅靠 Android Mock Location，小程序里的 wx.getLocation 可能一直不变。这是微信侧限制，不是划线/模拟没生效。\n\n可靠做法（测你自己的小程序）：\n1. 手机与电脑同一 Wi‑Fi\n2. App 底部「复制桥接地址」\n3. 小程序开发设置勾选「不校验合法域名」\n4. 用 utils/location-provider.js，把 BRIDGE_URL 设为复制的地址\n5. 业务里用 getLocation()/onLocationChange 替代直接调 wx\n\n系统 Mock 仍会写入，可供其它 App 验证；但对微信不保证生效。\n\n勿用主号，勿用于虚假打卡。</string>
+</resources>

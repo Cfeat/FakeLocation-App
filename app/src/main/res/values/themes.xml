@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.FakeLocation" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/seed</item>
+        <item name="colorPrimaryDark">@color/seed_dark</item>
+        <item name="colorOnPrimary">@color/on_seed</item>
+        <item name="colorSecondary">@color/seed</item>
+        <item name="colorSurface">@color/surface_card</item>
+        <item name="android:statusBarColor">@color/seed_dark</item>
+        <item name="android:navigationBarColor">@color/surface</item>
+        <item name="android:windowBackground">@color/surface</item>
+        <item name="popupMenuBackground">@drawable/bg_popup_menu</item>
+        <item name="android:popupMenuStyle">@style/Widget.FakeLocation.PopupMenu</item>
+    </style>
+
+    <!-- Toolbar icons/title stay light on green bar -->
+    <style name="ThemeOverlay.FakeLocation.Toolbar" parent="ThemeOverlay.Material3.Dark.ActionBar">
+        <item name="colorControlNormal">@color/on_seed</item>
+        <item name="android:textColorPrimary">@color/on_seed</item>
+    </style>
+
+    <!-- Overflow menu: dark panel + light text (readable) -->
+    <style name="ThemeOverlay.FakeLocation.Popup" parent="ThemeOverlay.Material3.Dark">
+        <item name="android:colorBackground">@color/popup_bg</item>
+        <item name="colorSurface">@color/popup_bg</item>
+        <item name="android:textColorPrimary">@color/popup_text</item>
+        <item name="android:textColorSecondary">#B6F0E8</item>
+        <item name="android:textColor">@color/popup_text</item>
+        <item name="popupMenuBackground">@drawable/bg_popup_menu</item>
+    </style>
+
+    <style name="Widget.FakeLocation.PopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupBackground">@drawable/bg_popup_menu</item>
+    </style>
+</resources>

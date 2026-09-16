@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_wechat_help"
+        android:title="@string/action_wechat_help"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_coord_mode"
+        android:title="@string/action_coord_mode"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_retry_map"
+        android:title="@string/map_retry"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_tiles_gaode"
+        android:title="@string/tiles_gaode"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_tiles_gaode_sat"
+        android:title="@string/tiles_gaode_sat"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_tiles_geoq"
+        android:title="@string/tiles_geoq"
+        app:showAsAction="never" />
+</menu>

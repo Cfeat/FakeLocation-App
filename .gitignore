@@ -1,0 +1,57 @@
+# Gradle
+.gradle/
+build/
+**/build/
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+
+# Native / NDK
+.cxx/
+.externalNativeBuild/
+captures/
+
+# Kotlin / Java
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+*.dex
+hs_err_pid*
+
+# Packaging
+*.apk
+*.ap_
+*.aab
+*.apks
+outputs/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs & temp
+*.log
+*.tmp
+*.temp
+*.bak
+
+# Secrets / local env
+*.keystore
+*.jks
+google-services.json
+secrets.properties
+.env
+.env.*
+
+# Misc
+/app/release/
+*.hprof
+.navigation/
