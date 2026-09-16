@@ -32,8 +32,8 @@ Android 虚拟定位与轨迹模拟工具（Kotlin）。支持手指划线规划
 ## 快速开始
 
 ```bash
-git clone https://github.com/<your-name>/fakelocation.git
-cd fakelocation
+git clone https://github.com/Cfeat/fakelocation-android.git
+cd fakelocation-android
 ```
 
 用 Android Studio 打开工程，连接真机，点击 Run。
