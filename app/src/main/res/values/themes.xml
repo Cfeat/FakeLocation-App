@@ -4,32 +4,59 @@
         <item name="colorPrimary">@color/seed</item>
         <item name="colorPrimaryDark">@color/seed_dark</item>
         <item name="colorOnPrimary">@color/on_seed</item>
-        <item name="colorSecondary">@color/seed</item>
+        <item name="colorSecondary">@color/seed_mid</item>
         <item name="colorSurface">@color/surface_card</item>
         <item name="android:statusBarColor">@color/seed_dark</item>
-        <item name="android:navigationBarColor">@color/surface</item>
+        <item name="android:navigationBarColor">@color/surface_card</item>
         <item name="android:windowBackground">@color/surface</item>
         <item name="popupMenuBackground">@drawable/bg_popup_menu</item>
         <item name="android:popupMenuStyle">@style/Widget.FakeLocation.PopupMenu</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.FakeLocation.ModeButton</item>
     </style>
 
-    <!-- Toolbar icons/title stay light on green bar -->
     <style name="ThemeOverlay.FakeLocation.Toolbar" parent="ThemeOverlay.Material3.Dark.ActionBar">
         <item name="colorControlNormal">@color/on_seed</item>
         <item name="android:textColorPrimary">@color/on_seed</item>
     </style>
 
-    <!-- Overflow menu: dark panel + light text (readable) -->
     <style name="ThemeOverlay.FakeLocation.Popup" parent="ThemeOverlay.Material3.Dark">
         <item name="android:colorBackground">@color/popup_bg</item>
         <item name="colorSurface">@color/popup_bg</item>
         <item name="android:textColorPrimary">@color/popup_text</item>
-        <item name="android:textColorSecondary">#B6F0E8</item>
+        <item name="android:textColorSecondary">#B6E4E2</item>
         <item name="android:textColor">@color/popup_text</item>
         <item name="popupMenuBackground">@drawable/bg_popup_menu</item>
     </style>
 
     <style name="Widget.FakeLocation.PopupMenu" parent="Widget.Material3.PopupMenu">
         <item name="android:popupBackground">@drawable/bg_popup_menu</item>
+    </style>
+
+    <style name="Widget.FakeLocation.ModeButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="strokeColor">@color/panel_stroke</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <style name="Widget.FakeLocation.ActionPrimary" parent="Widget.Material3.Button">
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="backgroundTint">@color/seed</item>
+        <item name="android:textColor">@color/on_seed</item>
+    </style>
+
+    <style name="Widget.FakeLocation.ActionOutline" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="strokeColor">@color/panel_stroke</item>
+        <item name="android:textColor">@color/text_primary</item>
     </style>
 </resources>

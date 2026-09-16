@@ -14,7 +14,7 @@ object SafetyPolicy {
     const val SAFE_SPEED_MPS = 3.5f
 
     /** Absolute UI max — beyond this is rejected. */
-    const val MAX_SPEED_MPS = 8.0f
+    const val MAX_SPEED_MPS = 5.0f
 
     /** Whole simulation session hard limit. */
     const val MAX_SESSION_MS = 30 * 60 * 1000L

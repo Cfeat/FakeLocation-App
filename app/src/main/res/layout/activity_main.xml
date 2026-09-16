@@ -8,7 +8,7 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/seed"
         android:theme="@style/ThemeOverlay.FakeLocation.Toolbar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,26 +23,46 @@
         android:id="@+id/map"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#B7D4CE"
+        android:background="#C5DED9"
         app:layout_constraintBottom_toTopOf="@+id/panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-    <TextView
-        android:id="@+id/mapStatus"
+    <LinearLayout
+        android:id="@+id/mapStatusCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@drawable/bg_popup_menu"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="8dp"
-        android:text="@string/map_loading"
-        android:textColor="@color/popup_text"
-        android:textSize="12sp"
+        android:layout_margin="12dp"
+        android:background="@drawable/bg_map_status"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="10dp"
         app:layout_constraintEnd_toEndOf="@id/map"
         app:layout_constraintStart_toStartOf="@id/map"
-        app:layout_constraintTop_toTopOf="@id/map" />
+        app:layout_constraintTop_toTopOf="@id/map">
+
+        <TextView
+            android:id="@+id/mapStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/map_loading"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:id="@+id/mockProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginTop="8dp"
+            android:max="100"
+            android:progress="0"
+            android:progressTint="@color/seed"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnLocate"
@@ -52,7 +72,8 @@
         android:contentDescription="@string/locate_me"
         app:backgroundTint="@color/seed"
         app:borderWidth="0dp"
-        app:elevation="6dp"
+        app:elevation="8dp"
+        app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@id/panel"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_menu_mylocation"
@@ -63,59 +84,55 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_bottom_panel"
-        android:elevation="10dp"
+        android:elevation="16dp"
         android:orientation="vertical"
-        android:paddingHorizontal="14dp"
-        android:paddingTop="14dp"
-        android:paddingBottom="12dp"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <View
-            android:layout_width="36dp"
+            android:layout_width="40dp"
             android:layout_height="4dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:background="@color/panel_stroke" />
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bg_sheet_handle" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/modeGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_status_chip"
+            android:padding="4dp"
             app:checkedButton="@+id/btnModeDraw"
             app:selectionRequired="true"
             app:singleSelection="true">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnModeDraw"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.FakeLocation.ModeButton"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/mode_draw"
-                android:textSize="13sp" />
+                android:text="@string/mode_draw" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnModeAuto"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.FakeLocation.ModeButton"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:text="@string/mode_auto"
-                android:textSize="13sp" />
+                android:text="@string/mode_auto" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <TextView
             android:id="@+id/hintText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/hint_draw"
+            android:layout_marginTop="12dp"
+            android:text="@string/hint_draw_short"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
@@ -123,46 +140,76 @@
             android:id="@+id/diagText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_diag_chip"
-            android:fontFamily="monospace"
-            android:lineSpacingExtra="2dp"
-            android:padding="10dp"
-            android:text="@string/diag_idle"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_status_chip"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp"
+            android:text="@string/diag_idle_short"
             android:textColor="@color/text_primary"
-            android:textSize="11sp" />
+            android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/bridgeText"
+        <LinearLayout
+            android:id="@+id/bridgeCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_popup_menu"
-            android:lineSpacingExtra="2dp"
-            android:padding="10dp"
-            android:text="@string/bridge_hint"
-            android:textColor="@color/popup_text"
-            android:textSize="11sp" />
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_bridge_card"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="12dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCopyBridge"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/copy_bridge_url"
-            android:textColor="@color/seed" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/bridgeTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/bridge_card_title"
+                    android:textColor="@color/on_seed"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/bridgeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="middle"
+                    android:maxLines="1"
+                    android:text="@string/bridge_card_subtitle"
+                    android:textColor="#D6F3F1"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCopyBridge"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:minWidth="0dp"
+                android:text="@string/copy"
+                android:textColor="@color/on_seed"
+                android:textSize="12sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/speed_label"
+                android:text="@string/speed_short"
                 android:textColor="@color/text_primary"
                 android:textStyle="bold" />
 
@@ -170,19 +217,23 @@
                 android:id="@+id/speedSlider"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginHorizontal="8dp"
                 android:layout_weight="1"
                 android:stepSize="0.1"
                 android:value="1.2"
                 android:valueFrom="0.5"
-                android:valueTo="8" />
+                android:valueTo="5.0"
+                app:haloColor="@color/seed_soft"
+                app:thumbColor="@color/seed"
+                app:trackColorActive="@color/seed"
+                app:trackColorInactive="@color/panel_stroke" />
 
             <TextView
                 android:id="@+id/speedValue"
-                android:layout_width="42dp"
+                android:layout_width="58dp"
                 android:layout_height="wrap_content"
                 android:gravity="end"
-                android:text="1.2"
+                android:text="1.2 m/s"
                 android:textColor="@color/text_primary"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -191,49 +242,50 @@
             android:id="@+id/statusText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/status_idle"
+            android:text="@string/status_idle_short"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDrawToggle"
-                style="@style/Widget.Material3.Button.TonalButton"
+                style="@style/Widget.FakeLocation.ActionPrimary"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_marginEnd="6dp"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:text="@string/start_draw" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnClear"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.FakeLocation.ActionOutline"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_marginEnd="6dp"
-                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="0.85"
                 android:text="@string/clear_route" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnPlan"
-                style="@style/Widget.Material3.Button.TonalButton"
+                style="@style/Widget.FakeLocation.ActionPrimary"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_marginEnd="6dp"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:text="@string/plan_route"
                 android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnToggle"
+                style="@style/Widget.FakeLocation.ActionPrimary"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_weight="1.15"
+                android:layout_weight="1"
                 android:text="@string/start_mock" />
         </LinearLayout>
     </LinearLayout>

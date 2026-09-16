@@ -4,8 +4,16 @@
     <string name="mode_draw">划线模拟</string>
     <string name="mode_auto">设点自动规划</string>
     <string name="hint_draw">点「开始划线」，在地图上滑动画出路线，松手完成；右下角可定位到当前位置</string>
+    <string name="hint_draw_short">在地图上自由划线，模拟沿路线移动</string>
     <string name="hint_drawing">划线中：用手指在地图上滑动，松开即完成路线</string>
     <string name="hint_auto">自动模式：依次点击起点/途经点/终点，再点「自动规划」</string>
+    <string name="diag_idle">开始模拟后这里显示系统写入/回读坐标</string>
+    <string name="diag_idle_short">未模拟 · 等待路线</string>
+    <string name="status_idle_short">请先指定模拟位置应用，再开始模拟</string>
+    <string name="speed_short">速度</string>
+    <string name="copy">复制</string>
+    <string name="bridge_card_title">LAN 桥接</string>
+    <string name="bridge_card_subtitle">点击复制局域网位置地址</string>
     <string name="start_draw">开始划线</string>
     <string name="stop_draw">完成划线</string>
     <string name="stop_before_draw">请先停止模拟再划线</string>
@@ -24,7 +32,6 @@
     <string name="jump_here">跳到此点</string>
     <string name="speed_label">速度 m/s</string>
     <string name="status_idle">未模拟 · 须在开发者选项指定本应用为「模拟位置信息应用」</string>
-    <string name="diag_idle">开始模拟后这里显示系统写入/回读坐标</string>
     <string name="need_mock_app">未指定模拟位置应用</string>
     <string name="need_location_permission">需要定位权限</string>
     <string name="route_too_short">至少需要 2 个点</string>

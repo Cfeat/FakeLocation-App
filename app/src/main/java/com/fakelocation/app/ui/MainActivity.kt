@@ -30,7 +30,6 @@ import com.fakelocation.app.map.AppTileSources
 import com.fakelocation.app.map.FreehandDrawOverlay
 import com.fakelocation.app.map.TileConnectivity
 import com.fakelocation.app.mock.MockLocationService
-import com.fakelocation.app.mock.MockLocationWriter
 import com.fakelocation.app.model.GeoPoint
 import com.fakelocation.app.route.GeoMath
 import com.fakelocation.app.route.OsrmRoutePlanner
@@ -83,38 +82,41 @@ class MainActivity : AppCompatActivity() {
                 MockLocationService.ACTION_STATUS -> {
                     val running = intent.getBooleanExtra(MockLocationService.EXTRA_RUNNING, false)
                     val message = intent.getStringExtra(MockLocationService.EXTRA_MESSAGE)
-                        ?: getString(R.string.status_idle)
+                        ?: getString(R.string.status_idle_short)
                     binding.statusText.text = message
                     binding.btnToggle.text =
                         if (running) getString(R.string.stop_mock) else getString(R.string.start_mock)
-                    if (!running && message.contains("自动停止")) {
-                        showPostStopSafetyReminder()
+                    if (running) {
+                        showMapStatus(message, showProgress = true)
+                    } else {
+                        binding.mockProgress.visibility = View.GONE
+                        if (message.contains("自动停止")) {
+                            showPostStopSafetyReminder()
+                        }
                     }
                     refreshDiagHeader()
                 }
                 MockLocationService.ACTION_POSITION -> {
                     val lat = intent.getDoubleExtra(MockLocationService.EXTRA_LAT, 0.0)
                     val lng = intent.getDoubleExtra(MockLocationService.EXTRA_LNG, 0.0)
+                    val progress = intent.getFloatExtra(MockLocationService.EXTRA_PROGRESS, 0f)
                     updateCursor(GeoPoint(lat, lng), follow = true)
+                    val pct = (progress * 100).toInt().coerceIn(0, 100)
+                    showMapStatus("模拟中 ${pct}%", showProgress = true)
+                    binding.mockProgress.progress = pct
                 }
                 MockLocationService.ACTION_DIAG -> {
                     val wgsLat = intent.getDoubleExtra(MockLocationService.EXTRA_WGS_LAT, Double.NaN)
                     val wgsLng = intent.getDoubleExtra(MockLocationService.EXTRA_WGS_LNG, Double.NaN)
                     val readLat = intent.getDoubleExtra(MockLocationService.EXTRA_READ_LAT, Double.NaN)
-                    val readLng = intent.getDoubleExtra(MockLocationService.EXTRA_READ_LNG, Double.NaN)
                     val mockOk = isMockLocationAppSelected()
-                    val readText = if (readLat.isNaN()) {
-                        "系统回读: 无"
-                    } else {
-                        "系统回读: %.6f, %.6f".format(readLat, readLng)
-                    }
                     binding.diagText.text = buildString {
-                        append(if (mockOk) "模拟应用: 已授权" else "模拟应用: 未指定⚠")
-                        append(" | 写入WGS: ")
-                        append("%.5f,%.5f".format(wgsLat, wgsLng))
-                        append('\n')
-                        append(readText)
-                        append(if (convertGcjToWgs) " | 地图GCJ→WGS" else " | 原样写入")
+                        append(if (MockLocationService.isRunning) "模拟中" else "就绪")
+                        append(if (mockOk) " · 已授权" else " · 未指定模拟应用")
+                        if (!wgsLat.isNaN()) {
+                            append(" · %.4f,%.4f".format(wgsLat, wgsLng))
+                        }
+                        if (!readLat.isNaN()) append(" · 回读OK")
                     }
                 }
             }
@@ -276,13 +278,11 @@ class MainActivity : AppCompatActivity() {
     private fun switchTiles(source: org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase, label: String) {
         binding.map.setTileSource(source)
         binding.map.invalidate()
-        binding.mapStatus.visibility = View.VISIBLE
-        binding.mapStatus.text = "已切换：$label（若仍灰屏请点菜单「重试加载地图」）"
+        showMapStatus("已切换：$label", showProgress = false)
     }
 
     private fun probeAndApplyTiles() {
-        binding.mapStatus.visibility = View.VISIBLE
-        binding.mapStatus.text = getString(R.string.map_loading)
+        showMapStatus(getString(R.string.map_loading), showProgress = false)
         lifecycleScope.launch {
             val result = TileConnectivity.probe()
             if (result.ok) {
@@ -293,23 +293,29 @@ class MainActivity : AppCompatActivity() {
                 binding.map.setTileSource(source)
                 binding.map.setUseDataConnection(true)
                 binding.map.invalidate()
-                binding.mapStatus.text = getString(R.string.map_ok, result.source, result.detail)
-                binding.mapStatus.postDelayed({
-                    if (binding.mapStatus.text.toString().startsWith("地图源")) {
-                        binding.mapStatus.visibility = View.GONE
+                showMapStatus(getString(R.string.map_ok, result.source, result.detail), showProgress = false)
+                binding.mapStatusCard.postDelayed({
+                    if (!MockLocationService.isRunning) {
+                        binding.mapStatusCard.visibility = View.GONE
                     }
-                }, 4000)
+                }, 3500)
             } else {
-                binding.mapStatus.text = getString(R.string.map_fail, result.detail)
+                showMapStatus(getString(R.string.map_fail, result.detail), showProgress = false)
             }
         }
+    }
+
+    private fun showMapStatus(text: String, showProgress: Boolean) {
+        binding.mapStatusCard.visibility = View.VISIBLE
+        binding.mapStatus.text = text
+        binding.mockProgress.visibility = if (showProgress) View.VISIBLE else View.GONE
     }
 
     private fun setupControls() {
         binding.speedSlider.valueFrom = 0.5f
         binding.speedSlider.valueTo = SafetyPolicy.MAX_SPEED_MPS
         binding.speedSlider.value = SafetyPolicy.DEFAULT_SPEED_MPS
-        binding.speedValue.text = String.format("%.1f", SafetyPolicy.DEFAULT_SPEED_MPS)
+        binding.speedValue.text = String.format("%.1f m/s", SafetyPolicy.DEFAULT_SPEED_MPS)
 
         binding.modeGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (!isChecked) return@addOnButtonCheckedListener
@@ -324,9 +330,11 @@ class MainActivity : AppCompatActivity() {
             binding.hintText.text = if (autoMode) {
                 getString(R.string.hint_auto)
             } else {
-                getString(R.string.hint_draw)
+                getString(R.string.hint_draw_short)
             }
+            styleModeButtons()
         }
+        styleModeButtons()
 
         binding.btnDrawToggle.setOnClickListener {
             if (MockLocationService.isRunning) {
@@ -338,20 +346,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnLocate.setOnClickListener { locateMe(showToast = true) }
 
-        binding.btnCopyBridge.setOnClickListener {
-            val url = currentBridgeUrl()
-            if (url == null) {
-                toast(R.string.bridge_no_ip)
-                refreshBridgeUrl()
-                return@setOnClickListener
-            }
-            val cm = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            cm.setPrimaryClip(ClipData.newPlainText("bridge", url))
-            toast(getString(R.string.bridge_copied, url))
-        }
+        binding.btnCopyBridge.setOnClickListener { copyBridgeUrl() }
+        binding.bridgeCard.setOnClickListener { copyBridgeUrl() }
 
         binding.speedSlider.addOnChangeListener { _, value, _ ->
-            binding.speedValue.text = String.format("%.1f", value)
+            binding.speedValue.text = String.format("%.1f m/s", value)
             if (MockLocationService.isRunning) {
                 startService(
                     Intent(this, MockLocationService::class.java)
@@ -409,8 +408,45 @@ class MainActivity : AppCompatActivity() {
         if (enabled) {
             binding.hintText.text = getString(R.string.hint_drawing)
         } else if (!autoMode) {
-            binding.hintText.text = getString(R.string.hint_draw)
+            binding.hintText.text = getString(R.string.hint_draw_short)
         }
+    }
+
+    private fun styleModeButtons() {
+        val drawChecked = binding.modeGroup.checkedButtonId == R.id.btnModeDraw
+        styleModeButton(binding.btnModeDraw, drawChecked)
+        styleModeButton(binding.btnModeAuto, !drawChecked && autoMode)
+    }
+
+    private fun styleModeButton(button: com.google.android.material.button.MaterialButton, selected: Boolean) {
+        if (selected) {
+            button.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.seed)
+            )
+            button.setTextColor(ContextCompat.getColor(this, R.color.on_seed))
+            button.strokeWidth = 0
+        } else {
+            button.backgroundTintList = android.content.res.ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.surface_card)
+            )
+            button.setTextColor(ContextCompat.getColor(this, R.color.text_primary))
+            button.strokeWidth = (resources.displayMetrics.density).toInt().coerceAtLeast(1)
+            button.strokeColor = android.content.res.ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.panel_stroke)
+            )
+        }
+    }
+
+    private fun copyBridgeUrl() {
+        val url = currentBridgeUrl()
+        if (url == null) {
+            toast(R.string.bridge_no_ip)
+            refreshBridgeUrl()
+            return
+        }
+        val cm = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        cm.setPrimaryClip(ClipData.newPlainText("bridge", url))
+        toast(getString(R.string.bridge_copied, url))
     }
 
     private fun applyDrawnRoute(points: List<GeoPoint>) {
@@ -425,18 +461,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun refreshDiagHeader() {
         val mockOk = isMockLocationAppSelected()
-        val last = MockLocationWriter.lastWrittenWgs
-        binding.diagText.text = buildString {
-            append(if (mockOk) "模拟应用: 已授权 ✓" else "模拟应用: 未指定 ⚠")
-            append('\n')
-            if (last != null) {
-                append("系统写入WGS: %.6f, %.6f".format(last.latitude, last.longitude))
-            } else {
-                append(getString(R.string.diag_idle))
-            }
-            append(if (convertGcjToWgs) " | GCJ→WGS" else " | 原样写入")
-            append('\n')
-            append("微信小程序请用下方「桥接地址」，勿依赖系统 Mock")
+        binding.diagText.text = when {
+            MockLocationService.isRunning -> "模拟中 · " + if (mockOk) "已授权" else "未指定模拟应用"
+            mockOk -> "就绪 · 模拟应用已授权"
+            else -> getString(R.string.diag_idle_short) + " · 未指定模拟应用"
+        }
+        if (!MockLocationService.isRunning) {
+            binding.statusText.text = getString(R.string.status_idle_short)
         }
     }
 
@@ -448,16 +479,12 @@ class MainActivity : AppCompatActivity() {
             false
         }
         if (ip == null) {
-            binding.bridgeText.text =
-                getString(R.string.bridge_hint) + "\n\n" + getString(R.string.bridge_no_ip)
+            binding.bridgeTitle.text = getString(R.string.bridge_card_title)
+            binding.bridgeText.text = getString(R.string.bridge_no_ip)
         } else {
             val url = "http://$ip:${LocationHttpServer.DEFAULT_PORT}/location"
-            binding.bridgeText.text = buildString {
-                append(getString(R.string.bridge_hint))
-                append("\n\n")
-                append(url)
-                append(if (alive) "\n服务: 运行中" else "\n服务: 未启动")
-            }
+            binding.bridgeTitle.text = "bridge · ${if (alive) "已连接" else "服务异常"}"
+            binding.bridgeText.text = url
         }
     }
 
@@ -492,8 +519,7 @@ class MainActivity : AppCompatActivity() {
 
         locating = true
         binding.btnLocate.isEnabled = false
-        binding.mapStatus.visibility = View.VISIBLE
-        binding.mapStatus.text = getString(R.string.locating)
+        showMapStatus(getString(R.string.locating), showProgress = false)
         if (showToast) toast(R.string.locating)
 
         locationResolver.request(
@@ -512,15 +538,18 @@ class MainActivity : AppCompatActivity() {
                 binding.map.controller.setZoom(18.0)
                 binding.map.controller.animateTo(osm)
                 binding.map.invalidate()
-                binding.mapStatus.text = getString(
-                    R.string.located_ok,
-                    mapPoint.latitude,
-                    mapPoint.longitude,
-                    raw.accuracy
+                showMapStatus(
+                    getString(
+                        R.string.located_ok,
+                        mapPoint.latitude,
+                        mapPoint.longitude,
+                        raw.accuracy
+                    ),
+                    showProgress = false
                 )
-                binding.mapStatus.postDelayed({
-                    if (binding.mapStatus.text.toString().startsWith("已定位")) {
-                        binding.mapStatus.visibility = View.GONE
+                binding.mapStatusCard.postDelayed({
+                    if (!MockLocationService.isRunning) {
+                        binding.mapStatusCard.visibility = View.GONE
                     }
                 }, 3500)
                 if (showToast) {
@@ -536,7 +565,7 @@ class MainActivity : AppCompatActivity() {
             onError = { msg ->
                 locating = false
                 binding.btnLocate.isEnabled = true
-                binding.mapStatus.text = msg
+                showMapStatus(msg, showProgress = false)
                 if (showToast) toast(msg)
             }
         )
